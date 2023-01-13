@@ -62,17 +62,16 @@ if (isset($_GET)) {
                 echo "<br>visit localhost for the API reference";
                 die();
             }
-            break;
+            break; 
 
         case "del":
             // delete specific task
-            if (array_key_exists("value", $_GET)) {
-                // $list = array_splice($list, $_GET["value"], 1);
-                unset($list[$_GET["value"]]);
+            if (array_key_exists("key", $_GET)) {
+                unset($list[$_GET["key"]]);
                 storeList();
             } else { // request not authorized
                 http_response_code(400);
-                echo "ERROR 400: request is missing parameters ( 'value' )";
+                echo "ERROR 400: request is missing parameters ( 'key' )";
                 echo "<br>visit localhost for the API reference";
                 die();
             }
