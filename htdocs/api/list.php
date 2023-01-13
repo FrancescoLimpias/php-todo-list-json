@@ -7,6 +7,7 @@ require __DIR__ . "/../php/config.php";
 if (!$USER) {
 
     // request not authorized
+    http_response_code(403);
     echo "ERROR 403: authentication has not been provided";
     echo "<br>visit localhost for the API reference";
     die();
@@ -17,16 +18,11 @@ if (!$USER) {
 $USER_DIR = __DIR__ . "/../users/" . $USER["ID"] . "/";
 
 // user list read/write
-$list = json_decode(file_get_contents($USER_DIR . "list.json")) ?? [
-    [
+$list = json_decode(file_get_contents($USER_DIR . "list.json"), true) ?? [
+    0 => [
         "title" => "prova1",
         "desc" => "descrizione della prova1",
         "check" => false,
-    ],
-    [
-        "title" => "prova2",
-        "desc" => "descrizione della prova2",
-        "check" => true,
     ],
 ];
 function storeList()
@@ -36,19 +32,30 @@ function storeList()
 }
 
 // switch on request type
-// DEBUG: change GET to SET as soon as front has passed necessary api tests
 if (isset($_GET)) {
     switch ($_GET["request"]) {
 
         case "list":
-            echo json_encode($list);
+            // list all user tags
+            /* no operation is taking place
+             * because the list of tasks
+             * is always returned to the user
+             */
             break;
 
         case "set":
-            if (isset($_GET["value"])) {
-                $list[] = $_GET["value"];
+            // set task (new task/re-set old task)
+            if (array_key_exists("value", $_GET)) {
+                // check for key
+                if (array_key_exists("key", $_GET)) {
+                    $list[$_GET["key"]] = $_GET["value"];
+                } else {
+                    $list[] = $_GET["value"];
+                }
+
                 storeList();
             } else {
+                http_response_code(400);
                 echo "ERROR 400: request is missing parameters ( 'value' )";
                 echo "<br>visit localhost for the API reference";
                 die();
@@ -56,10 +63,13 @@ if (isset($_GET)) {
             break;
 
         case "del":
-            if (isset($_GET["value"])) {
-                $list = array_splice($list, $_GET["value"], 1);
+            // delete specific task
+            if (array_key_exists("value", $_GET)) {
+                // $list = array_splice($list, $_GET["value"], 1);
+                unset($list[$_GET["value"]]);
                 storeList();
             } else { // request not authorized
+                http_response_code(400);
                 echo "ERROR 400: request is missing parameters ( 'value' )";
                 echo "<br>visit localhost for the API reference";
                 die();
@@ -67,3 +77,6 @@ if (isset($_GET)) {
             break;
     }
 }
+
+// Return the actual state of list
+echo json_encode($list);
