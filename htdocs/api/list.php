@@ -1,4 +1,6 @@
 <?php
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Headers: X-Requested-With");
 
 // retrieve session data
 require __DIR__ . "/../php/config.php";
