@@ -97,7 +97,7 @@ export default {
   <h1>
     Todo List
   </h1>
-  <List @task-updated="setTask" />
+  <List @task-updated="setTask" @task-deleted="deleteTask"/>
   <ListAdd @task-add="setTask"/>
 </template>
 
