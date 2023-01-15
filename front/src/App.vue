@@ -94,13 +94,11 @@ export default {
 </script>
 
 <template>
-  <h1>
-    Todo List
-  </h1>
-  <List @task-updated="setTask" @task-deleted="deleteTask"/>
-  <ListAdd @task-add="setTask"/>
+
+  <div class="container">
+    <h1 class="text-center">Todo List</h1>
+    <List @task-updated="setTask" @task-deleted="deleteTask" />
+    <ListAdd @task-add="setTask" />
+  </div>
+
 </template>
-
-<style scoped>
-
-</style>
