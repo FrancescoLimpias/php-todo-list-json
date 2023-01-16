@@ -30,6 +30,19 @@ export default {
       return "http://localhost/api/list.php";
     },
 
+    updateListFromJSON(response) {
+      this.store.list = JSON.parse(
+        response.request.responseText,
+        (key, value) => {
+          if(key == "check"){
+            return (value === 'true')
+          } else {
+            return value;
+          }
+        }
+        );
+    },
+
     // fetch data (from server)
     fetchList() {
       axios.get(this.urlByApi("list"), {
@@ -37,7 +50,9 @@ export default {
           "request": "list",
         }
       }).then((response) => {
-        this.store.list = response.data;
+        console.log(response);
+        this.updateListFromJSON(response);
+        // this.store.list = response.data;
       }).catch((error) => {
         console.log(error);
       });
@@ -60,7 +75,9 @@ export default {
       // send request
       axios
         .get(this.urlByApi("list"), { params })
-        .then((response) => { this.store.list = response.data; })
+        .then((response) => {
+          this.updateListFromJSON(response);/* this.store.list = response.data; */
+        })
         .catch((error) => { console.log(error) });
     },
 
@@ -74,7 +91,9 @@ export default {
             "key": key,
           }
         })
-        .then((response) => { this.store.list = response.data; })
+        .then((response) => {
+          this.updateListFromJSON(response);/* this.store.list = response.data; */
+        })
         .catch((error) => { console.log(error) });
 
     },
@@ -97,8 +116,7 @@ export default {
 
   <div class="container">
     <h1 class="text-center">Todo List</h1>
-    <List @task-updated="setTask" @task-deleted="deleteTask" />
-    <ListAdd @task-add="setTask" />
+    <List @task-updated="setTask" @task-deleted="deleteTask" @task-add="setTask" />
   </div>
 
 </template>

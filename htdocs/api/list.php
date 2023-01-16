@@ -21,11 +21,11 @@ $USER_DIR = __DIR__ . "/../users/" . $USER["ID"] . "/";
 
 // user list read/write
 $list = json_decode(file_get_contents($USER_DIR . "list.json"), true) ?? [
-    0 => [
+    /* 0 => [
         "title" => "prova1",
         "desc" => "descrizione della prova1",
         "check" => false,
-    ],
+    ], */
 ];
 function storeList()
 {
@@ -50,9 +50,14 @@ if (isset($_GET)) {
             if (array_key_exists("value", $_GET)) {
                 // check for key
                 if (array_key_exists("key", $_GET)) {
-                    $list[$_GET["key"]] = $_GET["value"];
+                    $list[(int) $_GET["key"]] = $_GET["value"];
                 } else {
-                    $list[] = $_GET["value"];
+                    if(count($list) == 0){
+                        // to force the array to be associative
+                        $list[1] = $_GET["value"];
+                    } else {
+                        $list[] = $_GET["value"];
+                    }
                 }
 
                 storeList();
@@ -62,7 +67,7 @@ if (isset($_GET)) {
                 echo "<br>visit localhost for the API reference";
                 die();
             }
-            break; 
+            break;
 
         case "del":
             // delete specific task
@@ -80,4 +85,5 @@ if (isset($_GET)) {
 }
 
 // Return the actual state of list
+header("Content-Type: application/json");
 echo json_encode($list);

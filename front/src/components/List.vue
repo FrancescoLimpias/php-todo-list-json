@@ -1,7 +1,12 @@
 <script>
 import { store } from '../store.js';
+import ListAdd from './ListAdd.vue';
 
 export default {
+
+    name: "List",
+
+    components: {ListAdd},
 
     data() {
         return {
@@ -9,7 +14,7 @@ export default {
         }
     },
 
-    emits: ['task-updated', 'task-delete'],
+    emits: ['task-updated', 'task-delete', 'task-add'],
 
 }
 
@@ -29,7 +34,7 @@ export default {
                         @blur="$emit('task-updated', key)">
                 </div>
                 <div class="form-group mr-3">
-                    <input type="text" class="form-control" placeholder="Task Title" v-model="task.title"
+                    <input type="text" class="form-control" :placeholder="key" v-model="task.title"
                         @blur="$emit('task-updated', key)">
                 </div>
                 <div class="form-group mr-3">
@@ -42,6 +47,7 @@ export default {
                     </button>
                 </div>
             </li>
+            <ListAdd @task-add="(k, v) => $emit('task-add', k, v)"/>
         </ul>
     </div>
 </template>
